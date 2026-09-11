@@ -18,7 +18,7 @@ Il color-picker di Smashrun non accetta un RGB diretto: la sua API (`SaveUserGra
 |---|---|
 | [srcp.py](srcp.py) | Scandaglia `it.smashrun.com/images/color-picker/` per anno/mese (dal 2000 a oggi) e stampa gli URL delle immagini realmente esistenti. |
 | [dwlcp.py](dwlcp.py) | Scarica in locale la lista di immagini trovate da `srcp.py`. |
-| [pick_color.py](pick_color.py) | **Script principale.** Dato un RGB, cerca fra le immagini locali (cartella `Smashrun_cp/`) il pixel più vicino e mostra le coordinate da usare. |
+| [pick_color.py](pick_color.py) | **Script principale.** Dato un RGB, cerca fra le immagini locali (cartella `immagini_color_picker/`) il pixel più vicino e mostra le coordinate da usare. |
 | [custom.py](custom.py) | Versione originale/dimostrativa: legge un pixel fisso da un'immagine e invia la richiesta a Smashrun (senza gestione di autenticazione). |
 
 ## Requisiti
@@ -78,6 +78,21 @@ console.log("body:", await r.text());
 - Lo script `pick_color.py` accetta anche un flag `--apply` per inviare la richiesta direttamente da Python, ma **funzionerà solo se hai una sessione autenticata** (cookie) passata alla libreria `requests` — allo stato attuale non è implementato, quindi va usato solo in modalità di ricerca (senza `--apply`) e applicato via console browser come sopra.
 - Le immagini locali si trovano in `immagini_color_picker/` (esclusa da git, va scaricata con `dwlcp.py`).
 - `dwlcp.py` contiene una lista di URL già nota; `srcp.py` serve per verificarla/aggiornarla se Smashrun pubblica nuove immagini.
+
+## Contributing
+
+Contributi benvenuti, è un progetto piccolo e informale:
+
+1. Fai un fork del repository.
+2. Crea un branch per la tua modifica (`git checkout -b feature/nome-modifica`).
+3. Apri una Pull Request descrivendo cosa cambia e perché.
+
+Idee utili se vuoi contribuire:
+- gestione automatica dell'autenticazione in `pick_color.py --apply` (sessione/cookie), per applicare il colore senza passare dalla console del browser;
+- far scrivere a `srcp.py` la lista di URL trovati in un file, letto poi da `dwlcp.py` invece della lista hardcoded;
+- test automatici per `find_best_pixel`.
+
+Per bug o richieste, apri una [Issue](https://github.com/alemape/smashrun-color-picker/issues).
 
 ## Licenza
 
