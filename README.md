@@ -3,6 +3,8 @@
 [![License: MIT](https://img.shields.io/github/license/alemape/smashrun-color-picker)](LICENSE)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 
+[English](README.en.md) | **Italiano**
+
 Piccola suite di script per impostare il colore del grafico attività su [Smashrun](https://it.smashrun.com/) scegliendolo tramite valori **RGB** invece che cliccando manualmente sull'immagine color-picker del sito.
 
 > **Disclaimer:** progetto personale/educativo, non affiliato né sponsorizzato da Smashrun. Usa un endpoint interno del sito non documentato pubblicamente come API — funziona solo con il proprio account e la propria sessione già autenticata, ma è comunque un uso non ufficiale del servizio: usalo a tuo rischio.
