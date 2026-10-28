@@ -3,67 +3,67 @@
 [![License: MIT](https://img.shields.io/github/license/alemape/smashrun-color-picker)](LICENSE)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 
-[English](README.en.md) | **Italiano**
+**English** | [Italiano](README.it.md)
 
-Piccola suite di script per impostare il colore del grafico attività su [Smashrun](https://it.smashrun.com/) scegliendolo tramite valori **RGB** invece che cliccando manualmente sull'immagine color-picker del sito.
+A small set of scripts to set your activity graph color on [Smashrun](https://www.smashrun.com/) using **RGB** values, instead of clicking on the site's color-picker image.
 
-> **Disclaimer:** progetto personale/educativo, non affiliato né sponsorizzato da Smashrun. Usa un endpoint interno del sito non documentato pubblicamente come API — funziona solo con il proprio account e la propria sessione già autenticata, ma è comunque un uso non ufficiale del servizio: usalo a tuo rischio.
+> **Disclaimer:** personal/educational project, not affiliated with or endorsed by Smashrun. It uses an internal site endpoint that is not publicly documented as an API. It only works with your own account and an already-authenticated session, but it is still an unofficial use of the service: use it at your own risk.
 
-## Come funziona
+## How it works
 
-Il color-picker di Smashrun non accetta un RGB diretto: la sua API (`SaveUserGraphColorFromImage`) vuole una coordinata `(x, y)` e il nome di un'immagine già ospitata sul loro server, e sarà il server a leggere il colore da quel pixel. Questa suite quindi:
+Smashrun's color picker does not accept an RGB value directly: its API (`SaveUserGraphColorFromImage`) takes an `(x, y)` coordinate and the name of an image already hosted on their server, and the server reads the color from that pixel. This suite therefore:
 
-1. scarica in locale le immagini color-picker usate dal sito;
-2. dato un RGB a piacere, cerca fra tutte le immagini il pixel più vicino a quel colore;
-3. prepara la chiamata `(x, y, immagine)` da inviare all'API per applicarlo all'account.
+1. downloads the color-picker images used by the site;
+2. given any RGB value, searches all the images for the closest matching pixel;
+3. builds the `(x, y, image)` call to send to the API to apply the color to your account.
 
-## File
+## Files
 
-| File | Cosa fa |
+| File | Description |
 |---|---|
-| [srcp.py](srcp.py) | Scandaglia `it.smashrun.com/images/color-picker/` per anno/mese (dal 2000 a oggi) e stampa gli URL delle immagini realmente esistenti. |
-| [dwlcp.py](dwlcp.py) | Scarica in locale la lista di immagini trovate da `srcp.py`. |
-| [pick_color.py](pick_color.py) | **Script principale.** Dato un RGB, cerca fra le immagini locali (cartella `immagini_color_picker/`) il pixel più vicino e mostra le coordinate da usare. |
-| [custom.py](custom.py) | Versione originale/dimostrativa: legge un pixel fisso da un'immagine e invia la richiesta a Smashrun (senza gestione di autenticazione). |
+| [srcp.py](srcp.py) | Probes `it.smashrun.com/images/color-picker/` by year/month (2000 to today) and prints the URLs of the images that actually exist. |
+| [dwlcp.py](dwlcp.py) | Downloads the list of images found by `srcp.py`. |
+| [pick_color.py](pick_color.py) | **Main script.** Given an RGB value, finds the closest pixel among the local images (`immagini_color_picker/` folder) and prints the coordinates to use. |
+| [custom.py](custom.py) | Original/demo version: reads a fixed pixel from an image and sends the request to Smashrun (no authentication handling). |
 
-## Requisiti
+## Requirements
 
 ```bash
 pip install requests Pillow numpy
 ```
 
-## Uso
+## Usage
 
-### 0. Scarica le immagini color-picker (non incluse nel repo)
+### 0. Download the color-picker images (not included in the repo)
 
-Le immagini sono proprietà di Smashrun e non vengono distribuite in questo repository: vanno scaricate localmente al primo utilizzo.
+The images are Smashrun's property and are not distributed in this repository: download them locally on first use.
 
 ```bash
-python srcp.py    # trova gli URL delle immagini disponibili
-python dwlcp.py   # le scarica nella cartella immagini_color_picker/
+python srcp.py    # finds the available image URLs
+python dwlcp.py   # downloads them into immagini_color_picker/
 ```
 
-### 1. Trova il pixel più vicino a un colore
+### 1. Find the closest pixel to a color
 
 ```bash
 python pick_color.py R G B
 ```
 
-Esempio (Nike Volt, RGB 206 255 0):
+Example (Nike Volt, RGB 206 255 0):
 
 ```bash
 python pick_color.py 206 255 0
 ```
 
-Stampa il colore trovato, la distanza dal colore richiesto (0 = identico) e le coordinate/immagine da usare.
+It prints the color found, its distance from the requested color (0 = identical) and the coordinates/image to use.
 
-### 2. Applica il colore all'account
+### 2. Apply the color to your account
 
-L'endpoint di Smashrun richiede che tu sia loggato (identifica l'account dai cookie di sessione del browser) — per questo la richiesta va eseguita **dalla console del browser**, mentre sei loggato su smashrun.com, non dallo script Python:
+The Smashrun endpoint requires you to be logged in (it identifies your account through the browser's session cookies), so the request must be run **from the browser console** while you are logged in to smashrun.com, not from the Python script:
 
-1. Apri smashrun.com e fai login.
-2. Apri la Console degli strumenti sviluppatore (F12 → tab "Console").
-3. Incolla ed esegui (sostituendo x, y e nome immagine con quelli stampati da `pick_color.py`):
+1. Open smashrun.com and log in.
+2. Open the developer tools Console (F12 → "Console" tab).
+3. Paste and run the following (replacing x, y and the image name with the values printed by `pick_color.py`):
 
 ```js
 let r = await fetch("https://it.smashrun.com/services/user-jsonservice.asmx/SaveUserGraphColorFromImage", {
@@ -76,29 +76,29 @@ console.log("status:", r.status);
 console.log("body:", await r.text());
 ```
 
-4. Ricarica la pagina del profilo Smashrun per vedere il nuovo colore applicato.
+4. Reload your Smashrun profile page to see the new color applied.
 
-## Note
+## Notes
 
-- Lo script `pick_color.py` accetta anche un flag `--apply` per inviare la richiesta direttamente da Python, ma **funzionerà solo se hai una sessione autenticata** (cookie) passata alla libreria `requests` — allo stato attuale non è implementato, quindi va usato solo in modalità di ricerca (senza `--apply`) e applicato via console browser come sopra.
-- Le immagini locali si trovano in `immagini_color_picker/` (esclusa da git, va scaricata con `dwlcp.py`).
-- `dwlcp.py` contiene una lista di URL già nota; `srcp.py` serve per verificarla/aggiornarla se Smashrun pubblica nuove immagini.
+- `pick_color.py` also accepts an `--apply` flag to send the request directly from Python, but it **only works with an authenticated session** (cookies) passed to the `requests` library. This is not implemented yet, so use the script in search-only mode (without `--apply`) and apply the color through the browser console as shown above.
+- The local images live in `immagini_color_picker/` (git-ignored; download them with `dwlcp.py`).
+- `dwlcp.py` contains a hardcoded list of known URLs; `srcp.py` is there to verify/update it if Smashrun publishes new images.
 
 ## Contributing
 
-Contributi benvenuti, è un progetto piccolo e informale:
+Contributions are welcome; this is a small, informal project:
 
-1. Fai un fork del repository.
-2. Crea un branch per la tua modifica (`git checkout -b feature/nome-modifica`).
-3. Apri una Pull Request descrivendo cosa cambia e perché.
+1. Fork the repository.
+2. Create a branch for your change (`git checkout -b feature/your-change`).
+3. Open a Pull Request describing what changes and why.
 
-Idee utili se vuoi contribuire:
-- gestione automatica dell'autenticazione in `pick_color.py --apply` (sessione/cookie), per applicare il colore senza passare dalla console del browser;
-- far scrivere a `srcp.py` la lista di URL trovati in un file, letto poi da `dwlcp.py` invece della lista hardcoded;
-- test automatici per `find_best_pixel`.
+Ideas if you want to contribute:
+- automatic authentication handling in `pick_color.py --apply` (session/cookies), to apply the color without going through the browser console;
+- make `srcp.py` write the URLs it finds to a file that `dwlcp.py` reads, instead of the hardcoded list;
+- automated tests for `find_best_pixel`.
 
-Per bug o richieste, apri una [Issue](https://github.com/alemape/smashrun-color-picker/issues).
+For bugs or requests, open an [Issue](https://github.com/alemape/smashrun-color-picker/issues).
 
-## Licenza
+## License
 
 [MIT](LICENSE)
